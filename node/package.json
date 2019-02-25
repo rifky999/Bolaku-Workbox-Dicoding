@@ -1,0 +1,14 @@
+{
+  "name": "push",
+  "version": "1.0.0",
+  "description": "Web Push",
+  "main": "main.js",
+  "scripts": {
+    "test": "push"
+  },
+  "author": "rifky",
+  "license": "ISC",
+  "dependencies": {
+    "web-push": "^3.3.3"
+  }
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>BoKu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="CSS/materialize.min.css">  
+    <link rel="stylesheet" href="CSS/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+    <script src="JS/materialize.min.js"></script>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#DAE891" />
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper" >
+            <a href="#!" class="brand-logo">BolaKu</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><b class="material-icons">☰</b></a>
+            <ul class="hide-on-med-and-down dxbar" onclick="setTimeout(switching, 2)">
+                <li><a href="#teamfav">Team Favorite</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#topscore">Topscore</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <ul class="sidenav" id="mobile-demo" onclick="setTimeout(switching, 2)">
+        <li><a></a></li>
+        <li><a href="#teamfav">Team Favorit</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#topscore">Topscore</a></li>
+    </ul>
+    <div id="body-content"></div>
+    <script type="text/javascript" src="idb.js"></script>
+    <script type="text/javascript" src="JS/IDB.js"></script>
+    <script type="text/javascript" src="JS/TeamFavIDB.js"></script>
+    <script src="JS/APItopscore.js"></script>
+    <script src="JS/APIteam.js"></script>
+    <script src="JS/navbar.js"></script>
+    <script>
+       if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("/sw.js")
+                    .then(function () {
+                        console.log("Pendaftaran ServiceWorker berhasil");
+                    })
+                    .catch(function () {
+                        console.log("Pendaftaran ServiceWorker gagal");
+                    });
+            });
+        } else {
+            console.log("ServiceWorker belum didukung browser ini.");
+        }
+
+         // Checking Notification Fitur
+            if ("Notification" in window) {
+                requestPermission();
+            } else {
+                console.error("Browser tidak mendukung notifikasi.");
+            }
+
+            // Request Permission for notification
+            function requestPermission() {
+                Notification.requestPermission().then(function (result) {
+                    if (result === "denied") {
+                        console.log("Notifikasi Tidak Diizinkan.");
+                        return;
+                    } else if (result === "default") {
+                        console.error("Kotak Request Notifikasi Ditutup.");
+                        return;
+                    }
+
+                      if (('PushManager' in window)) {
+                        navigator.serviceWorker.getRegistration().then(function (reg) {
+                                reg.pushManager.subscribe({
+                                userVisibleOnly: true
+                            }).then(function (sub) {
+                                console.log('Berhasil melakukan subscribe dengan endpoint: ', sub.endpoint);
+                                console.log('Berhasil melakukan subscribe dengan p256dh key: ', btoa(String.fromCharCode.apply(null, new Uint8Array(sub.getKey('p256dh')))));
+                                console.log('Berhasil melakukan subscribe dengan auth key: ', btoa(String.fromCharCode.apply(null, new Uint8Array(sub.getKey('auth')))));
+                            }).catch(function (e) {
+                                console.error('Tidak dapat melakukan subscribe ', e);
+                            });
+                        });
+                    }
+                });
+            }
+
+    </script>
+
+</body>
+</html>
